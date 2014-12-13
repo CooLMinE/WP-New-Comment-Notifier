@@ -37,13 +37,15 @@ Class WP_New_Comment_Notifier
     {
         $commentDate = get_comment_date(get_option('date_format') . ' \a\t ' . 'g:i:sa', $comment->comment_ID);
         $authorUrl = $comment->comment_author_url == "" ? "N/A" : $comment->comment_author_url;
+        $authorEmail = $comment->comment_author_email;
+        $commentUrl = get_permalink($comment->comment_post_ID);
 
         $emailContent = '<html>'
                 . '<b>' . $comment->comment_author . ' (' . $comment->comment_author_IP . ')</b>' . '<br/>'
                 . '<b>Date:</b> ' . $commentDate . '<br/>'
-                . '<b>Email:</b> ' . $comment->comment_author_email . '<br/>'
+                . "<b>Email:</b>  <a href='mailto:{$authorEmail}'>{$authorEmail}</a>" . '<br/>'
                 . '<b>Url:</b> ' . $authorUrl . '<br/>'
-                . '<b>Posted at:</b> ' . get_permalink($comment->comment_post_ID) . '<br/><br/><br/>'
+                . "<b>Posted at:</b> <a href='{$commentUrl}' target='_blank'>{$commentUrl}</a>" . '<br/><br/><br/>'
                 . $comment->comment_content
                 . '</html>';
 
@@ -59,7 +61,7 @@ Class WP_New_Comment_Notifier
         $blog_admin_email = get_option("admin_email");
         $headers = array();
         $headers[] = "MIME-Version: 1.0";
-        $headers[] = "Content-type: text/html; charset=iso-8859-1";
+        $headers[] = "Content-type: text/html; charset=UTF-8";
         $headers[] = "From: " . $blog_name . " <" . $blog_admin_email . ">";
         $headers[] = "Reply-To: " . $blog_name . " <" . $blog_admin_email . ">";
         $headers[] = "Return-Path: " . $blog_name . " <" . $blog_admin_email . ">";
@@ -144,7 +146,6 @@ Class WP_New_Comment_Notifier
             }
         }
     }
-
 }
 
 
